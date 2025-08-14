@@ -2,7 +2,6 @@
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const next = require('next');
-const { setupSocket } = require('./src/lib/socket');
 
 const dev = process.env.NODE_ENV !== 'production';
 const port = process.env.PORT || 3000;
@@ -55,7 +54,24 @@ async function startServer() {
       pingInterval: 25000
     });
 
-    setupSocket(io);
+    // Load socket setup dynamically
+    try {
+      // Try to import the socket setup from the compiled .next directory
+      const socketPath = require.resolve('./.next/server/lib/socket.js');
+      const { setupSocket } = require(socketPath);
+      setupSocket(io);
+      console.log('✅ Socket.IO setup loaded successfully');
+    } catch (socketError) {
+      console.warn('⚠️ Socket.IO setup not found, using basic configuration');
+      // Basic socket setup if the module is not available
+      io.on('connection', (socket) => {
+        console.log('Client connected:', socket.id);
+        
+        socket.on('disconnect', () => {
+          console.log('Client disconnected:', socket.id);
+        });
+      });
+    }
 
     // Start listening
     server.listen(port, hostname, () => {
