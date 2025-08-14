@@ -4,7 +4,8 @@ services:
   - type: web
     name: ligasalle
     env: node
-    buildCommand: "npm install && npx prisma generate && npx prisma db push && npm run build"
+    nodeVersion: 18.20.0
+    buildCommand: "npm ci --production=false && npx prisma generate && npx prisma db push && npm run build"
     startCommand: "node scripts/start-production.js"
     envVars:
       # Database Configuration
@@ -50,9 +51,12 @@ services:
         - src/**
         - prisma/**
         - package.json
+        - package-lock.json
         - tailwind.config.ts
         - tsconfig.json
         - next.config.ts
+        - postcss.config.mjs
         - scripts/**
+        - .nvmrc
     # Auto-deploy configuration
     autoDeploy: true
