@@ -1,141 +1,274 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🏆 Sistema de Gestión de Ligas Deportivas
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Un sistema completo para la gestión de ligas deportivas escolares, desarrollado con Next.js 15, TypeScript y Prisma ORM. Soporta fútbol y baloncesto con categorías por edades.
 
-## ✨ Technology Stack
+## 📋 Tabla de Contenidos
 
-This scaffold provides a robust foundation built with:
+- [Características](#características)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Instalación Local](#instalación-local)
+- [Variables de Entorno](#variables-de-entorno)
+- [Despliegue en Render](#despliegue-en-render)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [API Endpoints](#api-endpoints)
+- [Contribución](#contribución)
+- [Licencia](#licencia)
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+## ✨ Características
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 🏆 Gestión de Ligas
+- Creación y gestión de múltiples ligas deportivas
+- Soporte para fútbol y baloncesto
+- Categorización por edades (1°-2°, 3°-4°, 5°-6° grado)
+- Gestión de temporadas académicas
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 👥 Gestión de Equipos y Jugadores
+- Creación de equipos por liga
+- Registro de jugadores por equipo
+- Información detallada de participantes
+- Sistema de carga de logos para equipos
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+### 📅 Gestión de Partidos
+- Programación de partidos entre equipos
+- Registro de resultados y estadísticas
+- Control de jornadas y fechas
+- Seguimiento de goles/anotaciones por jugador
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### 📊 Estadísticas y Reportes
+- Tablas de posiciones automáticas
+- Estadísticas de jugadores
+- Historial de partidos
+- Reportes por liga y categoría
+- Tabla de máximos anotadores
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+## 🛠 Stack Tecnológico
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+- **Frontend**: Next.js 15 con App Router
+- **Lenguaje**: TypeScript 5
+- **Estilos**: Tailwind CSS 4
+- **UI Components**: shadcn/ui
+- **Base de Datos**: SQLite (desarrollo) / PostgreSQL (producción)
+- **ORM**: Prisma
+- **Almacenamiento**: Cloudinary para imágenes
+- **Despliegue**: Render
 
-## 🎯 Why This Scaffold?
+## 🚀 Instalación Local
 
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### Prerrequisitos
 
-## 🚀 Quick Start
+- Node.js 18+ 
+- npm o yarn
 
-```bash
-# Install dependencies
-npm install
+### Pasos de Instalación
 
-# Start development server
-npm run dev
+1. **Clonar el repositorio**
+   ```bash
+   git clone https://github.com/flipeloflipavideo/ligasalle.git
+   cd ligasalle
+   ```
 
-# Build for production
-npm run build
+2. **Instalar dependencias**
+   ```bash
+   npm install
+   ```
 
-# Start production server
-npm start
+3. **Configurar variables de entorno**
+   ```bash
+   cp .env.example .env
+   ```
+   Editar el archivo `.env` con tus credenciales:
+   ```env
+   DATABASE_URL=file:./dev.db
+   CLOUDINARY_CLOUD_NAME=tu_cloud_name
+   CLOUDINARY_API_KEY=tu_api_key
+   CLOUDINARY_API_SECRET=tu_api_secret
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=tu_cloud_name
+   ```
+
+4. **Configurar la base de datos**
+   ```bash
+   # Generar Prisma Client
+   npx prisma generate
+   
+   # Crear tablas en la base de datos
+   npx prisma db push
+   ```
+
+5. **Ejecutar el servidor de desarrollo**
+   ```bash
+   npm run dev
+   ```
+
+6. **Abrir en el navegador**
+   ```
+   http://localhost:3000
+   ```
+
+## 🔧 Variables de Entorno
+
+Crear un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Base de Datos
+DATABASE_URL=file:./dev.db
+
+# Cloudinary (para carga de imágenes)
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=tu_cloud_name
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+## 🌐 Despliegue en Render
 
-## 🤖 Powered by Z.ai
+### 1. Preparar el Repositorio
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+Asegúrate de que tu repositorio contiene todos los archivos necesarios:
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+- ✅ Código fuente del proyecto
+- ✅ `package.json` con scripts de producción
+- ✅ `prisma/schema.prisma`
+- ✅ Archivos de configuración de Render
+- ✅ `.env.example` (no incluir `.env`)
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+### 2. Configurar Variables de Entorno en Render
 
-## 📁 Project Structure
+En tu dashboard de Render, añade las siguientes variables de entorno:
+
+```env
+# Base de Datos Neon PostgreSQL
+DATABASE_URL=postgresql://neondb_owner:tu_contraseña@ep-tu-host.neon.tech/neondb?sslmode=require&channel_binding=require
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=tu_cloud_name
+
+# Node.js
+NODE_ENV=production
+```
+
+### 3. Configuración de Build Command
+
+En la configuración de tu servicio en Render:
+
+- **Build Command**: `npm install && npx prisma generate && npx prisma db push && npm run build`
+- **Start Command**: `npm start`
+- **Runtime**: Node 18+
+
+### 4. Base de Datos en Producción
+
+#### Opción A: Usar Neon PostgreSQL (Recomendado)
+
+1. Crea una cuenta en [Neon](https://neon.tech/)
+2. Crea un nuevo proyecto de base de datos
+3. Copia la cadena de conexión
+4. Añádela como variable de entorno en Render
+
+### 5. Verificación Post-Despliegue
+
+Después del despliegue, verifica:
+
+- ✅ La aplicación carga correctamente
+- ✅ Las páginas funcionan sin errores
+- ✅ La conexión a la base de datos funciona
+- ✅ Las operaciones CRUD funcionan
+- ✅ La carga de imágenes funciona
+- ✅ Los estilos se cargan correctamente
+
+## 📁 Estructura del Proyecto
 
 ```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── src/
+│   ├── app/                    # App Router
+│   │   ├── api/               # API Routes
+│   │   ├── globals.css        # Estilos globales
+│   │   ├── layout.tsx         # Layout principal
+│   │   └── page.tsx           # Página principal
+│   ├── components/            # Componentes React
+│   │   ├── ui/                # Componentes shadcn/ui
+│   │   └── ImageUpload.tsx    # Componente de carga de imágenes
+│   ├── lib/                   # Utilidades y configuración
+│   │   ├── db.ts              # Configuración Prisma
+│   │   └── cloudinary.ts      # Configuración Cloudinary
+│   └── types/                 # Tipos TypeScript
+├── prisma/
+│   └── schema.prisma          # Esquema de base de datos
+├── public/                    # Archivos estáticos
+├── .env.example               # Plantilla de variables de entorno
+├── .gitignore                # Archivos ignorados por Git
+├── package.json              # Dependencias y scripts
+├── tailwind.config.ts        # Configuración Tailwind
+├── tsconfig.json             # Configuración TypeScript
+└── README.md                 # Este archivo
 ```
 
-## 🎨 Available Features & Components
+## 🔌 API Endpoints
 
-This scaffold includes a comprehensive set of modern web development tools:
+### Ligas
+- `GET /api/leagues` - Obtener todas las ligas
+- `POST /api/leagues` - Crear nueva liga
+- `GET /api/leagues/[id]` - Obtener liga por ID
+- `PUT /api/leagues/[id]` - Actualizar liga
+- `DELETE /api/leagues/[id]` - Eliminar liga
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### Equipos
+- `GET /api/teams` - Obtener todos los equipos
+- `POST /api/teams` - Crear nuevo equipo
+- `GET /api/teams/[id]` - Obtener equipo por ID
+- `PUT /api/teams/[id]` - Actualizar equipo
+- `DELETE /api/teams/[id]` - Eliminar equipo
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+### Jugadores
+- `GET /api/players` - Obtener todos los jugadores
+- `POST /api/players` - Crear nuevo jugador
+- `GET /api/players/[id]` - Obtener jugador por ID
+- `PUT /api/players/[id]` - Actualizar jugador
+- `DELETE /api/players/[id]` - Eliminar jugador
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+### Partidos
+- `GET /api/matches` - Obtener todos los partidos
+- `POST /api/matches` - Crear nuevo partido
+- `GET /api/matches/[id]` - Obtener partido por ID
+- `PUT /api/matches/[id]` - Actualizar partido
+- `DELETE /api/matches/[id]` - Eliminar partido
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+### Resultados
+- `GET /api/results` - Obtener todos los resultados
+- `POST /api/results` - Crear nuevo resultado
+- `GET /api/results/[id]` - Obtener resultado por ID
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+### Estadísticas
+- `GET /api/standings` - Obtener clasificaciones
+- `GET /api/top-scorers` - Obtener máximos anotadores
 
-## 🤝 Get Started with Z.ai
+### Utilidades
+- `POST /api/upload` - Subir imágenes a Cloudinary
+- `GET /api/health` - Verificar salud del servidor
+- `POST /api/clear-database` - Limpiar base de datos (cuidado)
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+## 🤝 Contribución
+
+1. Haz Fork del proyecto
+2. Crea tu rama de características (`git checkout -b feature/amazing-feature`)
+3. Haz commit de tus cambios (`git commit -m 'Add some amazing feature'`)
+4. Haz push a la rama (`git push origin feature/amazing-feature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - mira el archivo [LICENSE](LICENSE) para detalles.
+
+## 🆘 Soporte
+
+Si tienes problemas o preguntas:
+
+1. Revisa la documentación
+2. Busca issues existentes
+3. Crea un nuevo issue si es necesario
+4. Contacta al mantenedor del proyecto
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+**Desarrollado con ❤️ para la gestión deportiva escolar - Colegio La Salle**
