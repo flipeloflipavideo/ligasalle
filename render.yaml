@@ -56,10 +56,3 @@ services:
         - scripts/**
     # Auto-deploy configuration
     autoDeploy: true
-
-# Database Service (Optional - if using Render's PostgreSQL)
-databases:
-  - name: ligasalle-db
-    databaseName: ligasalle
-    user: ligasalle_user
-    version: "16"

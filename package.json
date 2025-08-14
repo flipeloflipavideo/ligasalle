@@ -4,17 +4,17 @@
   "description": "Sistema de gestión de ligas deportivas - Colegio La Salle",
   "private": true,
   "scripts": {
-    "dev": "nodemon --exec \"npx tsx server.ts\" --watch server.ts --watch src --ext ts,tsx,js,jsx 2>&1 | tee dev.log",
-    "build": "next build",
+    "dev": "node scripts/setup-prisma.js && nodemon --exec \"npx tsx server.ts\" --watch server.ts --watch src --ext ts,tsx,js,jsx 2>&1 | tee dev.log",
+    "build": "node scripts/setup-prisma.js && next build",
     "start": "NODE_ENV=production tsx server.ts 2>&1 | tee server.log",
     "start:prod": "node scripts/start-production.js",
-    "start:render": "node scripts/start-production.js",
+    "start:render": "node scripts/setup-prisma.js && node scripts/start-production.js",
     "lint": "next lint",
-    "db:push": "prisma db push",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset",
-    "db:studio": "prisma studio"
+    "db:push": "node scripts/setup-prisma.js && prisma db push",
+    "db:generate": "node scripts/setup-prisma.js && prisma generate",
+    "db:migrate": "node scripts/setup-prisma.js && prisma migrate dev",
+    "db:reset": "node scripts/setup-prisma.js && prisma migrate reset",
+    "db:studio": "node scripts/setup-prisma.js && prisma studio"
   },
   "engines": {
     "node": ">=18.0.0"
