@@ -5,7 +5,7 @@ services:
     name: ligasalle
     env: node
     nodeVersion: 18.20.0
-    buildCommand: "npm ci --production=false && npx prisma generate && npx prisma db push && npm run build"
+    buildCommand: "npm ci && npx prisma generate && npx prisma db push && npm run build"
     startCommand: "node scripts/start-production.js"
     envVars:
       # Database Configuration
