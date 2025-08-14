@@ -1,0 +1,180 @@
+// This is your Prisma schema file for PostgreSQL production,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Temporadas académicas
+model Season {
+  id          String   @id @default(cuid())
+  name        String   // Ej: "2024-2025", "Primer Semestre 2024"
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  isMain      Boolean  @default(false) // Temporada principal activa
+  schoolYear  String?  // Ej: "2024-2025"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leagues     League[]
+  holidays    Holiday[]
+  
+  @@map("seasons")
+}
+
+// Deportes disponibles
+enum SportType {
+  FOOTBALL
+  BASKETBALL
+}
+
+// Categorías por edades
+enum AgeCategory {
+  GRADE_1_2    // 1°-2° grado
+  GRADE_3_4    // 3°-4° grado
+  GRADE_5_6    // 5°-6° grado
+}
+
+// Ligas deportivas
+model League {
+  id           String      @id @default(cuid())
+  name         String      // Ej: "Liga de Fútbol Infantil"
+  description  String?
+  sportType    SportType   // Fútbol o Baloncesto
+  ageCategory  AgeCategory // Categoría por edad
+  seasonId     String
+  maxTeams     Int?        // Máximo de equipos permitidos
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  season       Season      @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  teams        Team[]
+  matches      Match[]
+
+  @@map("leagues")
+}
+
+// Equipos
+model Team {
+  id          String   @id @default(cuid())
+  name        String   // Ej: "Tigres Rojos"
+  description String?
+  leagueId    String
+  coachName   String?
+  color       String?  // Color representativo del equipo (opcional, para compatibilidad)
+  shieldUrl   String?  // URL del escudo en Cloudinary
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  league      League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  players     Player[]
+  homeMatches Match[]  @relation("HomeMatches")
+  awayMatches Match[]  @relation("AwayMatches")
+
+  @@map("teams")
+}
+
+// Jugadores
+model Player {
+  id          String   @id @default(cuid())
+  name        String
+  teamId      String
+  annotations String?  // Información adicional y estadísticas
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  goals       Goal[]
+
+  @@map("players")
+}
+
+// Estados de los partidos
+enum MatchStatus {
+  SCHEDULED    // Programado
+  IN_PROGRESS  // En progreso
+  COMPLETED    // Finalizado
+  CANCELLED    // Cancelado
+  POSTPONED    // Postergado
+}
+
+// Partidos
+model Match {
+  id            String      @id @default(cuid())
+  leagueId      String
+  homeTeamId    String
+  awayTeamId    String
+  matchDate     DateTime
+  matchTime     DateTime?
+  location      String?     // Lugar del partido
+  status        MatchStatus @default(SCHEDULED)
+  round         Int?        // Jornada o ronda
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  league        League      @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeTeam      Team        @relation("HomeMatches", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam      Team        @relation("AwayMatches", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  result        Result?
+
+  @@map("matches")
+}
+
+// Resultados de partidos
+model Result {
+  id          String   @id @default(cuid())
+  matchId     String   @unique
+  homeScore   Int      // Goles/puntos del equipo local
+  awayScore   Int      // Goles/puntos del equipo visitante
+  isFinished  Boolean  @default(false)
+  notes       String?  // Observaciones del partido
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  goals       Goal[]
+
+  @@map("results")
+}
+
+// Goles/anotaciones por jugador
+model Goal {
+  id          String   @id @default(cuid())
+  playerId    String
+  resultId    String
+  minute      Int      // Minuto del gol
+  isOwnGoal   Boolean  @default(false) // Gol en propia puerta
+  isPenalty   Boolean  @default(false) // Gol de penalti
+  notes       String?  // Observaciones
+  createdAt   DateTime @default(now())
+
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  result      Result   @relation(fields: [resultId], references: [id], onDelete: Cascade)
+
+  @@map("goals")
+}
+
+// Días festivos o vacaciones (exclusiones para calendario)
+model Holiday {
+  id          String   @id @default(cuid())
+  seasonId    String
+  name        String   // Ej: "Vacaciones de Navidad", "Semana Santa"
+  startDate   DateTime
+  endDate     DateTime
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  season      Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@map("holidays")
+}

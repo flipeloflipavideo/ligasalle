@@ -1,0 +1,65 @@
+# Render Configuration for Ligasalle - Sistema de Gestión de Ligas Deportivas
+
+services:
+  - type: web
+    name: ligasalle
+    env: node
+    buildCommand: "npm install && npx prisma generate && npx prisma db push && npm run build"
+    startCommand: "npm run start:render"
+    envVars:
+      # Database Configuration
+      - key: DATABASE_URL
+        sync: false
+        value: ""
+      # Cloudinary Configuration
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+        value: ""
+      - key: CLOUDINARY_API_KEY
+        sync: false
+        value: ""
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+        value: ""
+      - key: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+        sync: false
+        value: ""
+      # Node Environment
+      - key: NODE_ENV
+        value: production
+      # Next.js Configuration
+      - key: NEXTAUTH_URL
+        sync: false
+        value: ""
+      - key: NEXTAUTH_SECRET
+        sync: false
+        value: ""
+      # Production Configuration
+      - key: PORT
+        value: 10000
+      - key: ALLOWED_ORIGINS
+        value: "https://ligasalle.onrender.com"
+    # Health Check
+    healthCheckPath: /api/health
+    # Instance Configuration
+    instanceType: starter
+    numInstances: 1
+    # Build Configuration
+    buildFilter:
+      paths:
+        - src/**
+        - prisma/**
+        - package.json
+        - tailwind.config.ts
+        - tsconfig.json
+        - next.config.ts
+        - scripts/**
+    # Auto-deploy configuration
+    autoDeploy: true
+
+# Database Service (Optional - if using Render's PostgreSQL)
+databases:
+  - name: ligasalle-db
+    databaseName: ligasalle
+    user: ligasalle_user
+    version: "16"
