@@ -5,7 +5,7 @@ services:
     name: ligasalle
     env: node
     nodeVersion: 18.20.0
-    buildCommand: "npm ci && npx prisma generate && npx prisma db push && npm run build"
+    buildCommand: "npm ci --prefer-offline --no-audit && npx prisma generate && npx prisma db push && npm run build"
     startCommand: "node scripts/start-production.js"
     envVars:
       # Database Configuration
@@ -40,6 +40,15 @@ services:
         value: 10000
       - key: ALLOWED_ORIGINS
         value: "https://ligasalle.onrender.com"
+      # Network Configuration
+      - key: NPM_CONFIG_REGISTRY
+        value: "https://registry.npmjs.org/"
+      - key: NPM_CONFIG_FETCH_RETRY_MINTIMEOUT
+        value: "10000"
+      - key: NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT
+        value: "60000"
+      - key: NPM_CONFIG_FETCH_RETRIES
+        value: "3"
     # Health Check
     healthCheckPath: /api/health
     # Instance Configuration
