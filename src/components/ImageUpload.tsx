@@ -86,18 +86,24 @@ export default function ImageUpload({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-4 border-blue-500 bg-blue-100 shadow-lg">
       <CardContent className="p-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              Escudo del Equipo
+            <h3 className="text-xl font-bold flex items-center gap-2 text-blue-800">
+              <Shield className="w-6 h-6" />
+              ESCUDO DEL EQUIPO
             </h3>
             {previewUrl && (
-              <Badge variant="secondary">Imagen cargada</Badge>
+              <Badge variant="secondary" className="bg-green-100 text-green-800 border-2 border-green-500">
+                Imagen cargada ✓
+              </Badge>
             )}
           </div>
+
+          <p className="text-sm text-blue-700 font-medium bg-blue-50 p-3 rounded-lg border border-blue-200">
+            📸 Sube el escudo oficial del equipo aquí. Se recomienda una imagen cuadrada de al menos 200x200px.
+          </p>
 
           {/* Preview del escudo */}
           <div className="flex justify-center">
@@ -106,20 +112,20 @@ export default function ImageUpload({
                 <img
                   src={previewUrl}
                   alt={`Escudo de ${teamName}`}
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200 shadow-md"
+                  className="w-32 h-32 object-cover rounded-lg border-4 border-gray-300 shadow-xl"
                 />
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="absolute -top-2 -right-2 h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute -top-2 -right-2 h-8 w-8 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg"
                   onClick={handleRemoveImage}
                 >
                   <X className="w-4 h-4" />
                 </Button>
               </div>
             ) : (
-              <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                <Shield className="w-12 h-12 text-gray-400" />
+              <div className="w-32 h-32 border-4 border-dashed border-gray-400 rounded-lg flex items-center justify-center bg-gray-100 shadow-inner">
+                <Shield className="w-12 h-12 text-gray-500" />
               </div>
             )}
           </div>
@@ -138,8 +144,8 @@ export default function ImageUpload({
               <Button
                 onClick={triggerFileSelect}
                 disabled={uploading}
-                variant="outline"
-                className="flex-1"
+                variant="default"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3"
               >
                 <Upload className="w-4 h-4 mr-2" />
                 {uploading ? 'Subiendo...' : previewUrl ? 'Cambiar imagen' : 'Subir escudo'}
@@ -150,6 +156,7 @@ export default function ImageUpload({
                   variant="outline"
                   onClick={handleRemoveImage}
                   disabled={uploading}
+                  className="border-red-500 text-red-600 hover:bg-red-50 font-bold"
                 >
                   <X className="w-4 h-4 mr-2" />
                   Quitar
@@ -157,8 +164,8 @@ export default function ImageUpload({
               )}
             </div>
 
-            <p className="text-sm text-muted-foreground">
-              Formatos: JPG, PNG, GIF. Máximo 5MB. La imagen será redimensionada a 200x200px.
+            <p className="text-sm text-muted-foreground bg-gray-50 p-2 rounded">
+              <strong>Formatos:</strong> JPG, PNG, GIF. <strong>Máximo:</strong> 5MB. La imagen será redimensionada a 200x200px.
             </p>
           </div>
         </div>

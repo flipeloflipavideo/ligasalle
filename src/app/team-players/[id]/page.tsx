@@ -310,12 +310,16 @@ export default function TeamPlayersPage() {
                       required
                     />
                   </div>
-                  <input
-                    type="hidden"
-                    name="annotations"
-                    value={formData.annotations}
-                    onChange={(e) => setFormData({ ...formData, annotations: e.target.value })}
-                  />
+                  <div>
+                    <Label htmlFor="annotations">Notas</Label>
+                    <Textarea
+                      id="annotations"
+                      value={formData.annotations}
+                      onChange={(e) => setFormData({ ...formData, annotations: e.target.value })}
+                      placeholder="Información adicional del jugador (posición, número, etc.)"
+                      rows={3}
+                    />
+                  </div>
                   <DialogFooter>
                     <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       Cancelar

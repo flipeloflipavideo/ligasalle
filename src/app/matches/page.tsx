@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Calendar, 
   Clock, 
@@ -45,21 +44,10 @@ export default function MatchesPage() {
   const [homeScore, setHomeScore] = useState<string>("");
   const [awayScore, setAwayScore] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-  // Estados para el registro de anotadores
+  // Estados para el registro de anotadores (simplificado con cantidad)
   const [goals, setGoals] = useState<any[]>([]);
-  const [newGoal, setNewGoal] = useState<{
-    playerId: string;
-    minute: string;
-    isOwnGoal: boolean;
-    isPenalty: boolean;
-    notes: string;
-  }>({
-    playerId: "",
-    minute: "",
-    isOwnGoal: false,
-    isPenalty: false,
-    notes: ""
-  });
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string>("");
+  const [goalCount, setGoalCount] = useState<string>("1");
   const [players, setPlayers] = useState<any[]>([]);
 
   useEffect(() => {
@@ -125,6 +113,8 @@ export default function MatchesPage() {
       setGoals([]);
     }
     
+    setSelectedPlayerId(""); // Resetear selección de jugador
+    setGoalCount("1"); // Resetear cantidad
     setResultDialogOpen(true);
   };
 
@@ -156,46 +146,46 @@ export default function MatchesPage() {
         setAwayScore("");
         setNotes("");
         setGoals([]);
-        setNewGoal({
-          playerId: "",
-          minute: "",
-          isOwnGoal: false,
-          isPenalty: false,
-          notes: ""
-        });
+        setSelectedPlayerId("");
+        setGoalCount("1");
       }
     } catch (error) {
       console.error("Error saving result:", error);
     }
   };
 
-  // Funciones para manejar goles
+  // Funciones para manejar goles (simplificado con cantidad)
   const addGoal = () => {
-    if (!newGoal.playerId || !newGoal.minute) return;
+    if (!selectedPlayerId || !goalCount) return;
     
-    const player = players.find(p => p.id === newGoal.playerId);
+    const player = players.find(p => p.id === selectedPlayerId);
     if (!player) return;
     
-    const goal = {
-      playerId: newGoal.playerId,
-      minute: parseInt(newGoal.minute),
-      isOwnGoal: newGoal.isOwnGoal,
-      isPenalty: newGoal.isPenalty,
-      notes: newGoal.notes
-    };
+    const count = parseInt(goalCount) || 1;
+    const newGoals = [];
     
-    setGoals([...goals, goal]);
-    setNewGoal({
-      playerId: "",
-      minute: "",
-      isOwnGoal: false,
-      isPenalty: false,
-      notes: ""
-    });
+    // Crear múltiples entradas de goles para el mismo jugador
+    for (let i = 0; i < count; i++) {
+      newGoals.push({
+        playerId: selectedPlayerId,
+        minute: 1, // Minuto por defecto
+        isOwnGoal: false,
+        isPenalty: false,
+        notes: ""
+      });
+    }
+    
+    setGoals([...goals, ...newGoals]);
+    setSelectedPlayerId(""); // Resetear selección
+    setGoalCount("1"); // Resetear cantidad a 1
   };
 
   const removeGoal = (index: number) => {
     setGoals(goals.filter((_, i) => i !== index));
+  };
+
+  const removePlayerGoals = (playerId: string) => {
+    setGoals(goals.filter(goal => goal.playerId !== playerId));
   };
 
   const getPlayerName = (playerId: string) => {
@@ -499,42 +489,55 @@ export default function MatchesPage() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Anotadores</h3>
               
-              {/* Lista de goles registrados */}
+              {/* Lista de goles registrados (agrupados por jugador) */}
               {goals.length > 0 && (
                 <div className="space-y-2">
-                  <Label>Goles registrados:</Label>
+                  <Label>Anotadores registrados:</Label>
                   <div className="space-y-2 max-h-32 overflow-y-auto">
-                    {goals.map((goal, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{getPlayerName(goal.playerId)}</span>
-                          <span className="text-sm text-muted-foreground">Min. {goal.minute}</span>
-                          {goal.isOwnGoal && <Badge variant="destructive" size="sm">En propia</Badge>}
-                          {goal.isPenalty && <Badge variant="outline" size="sm">Penalti</Badge>}
+                    {(() => {
+                      // Agrupar goles por jugador
+                      const goalsByPlayer = goals.reduce((acc, goal) => {
+                        if (!acc[goal.playerId]) {
+                          acc[goal.playerId] = 0;
+                        }
+                        acc[goal.playerId]++;
+                        return acc;
+                      }, {} as Record<string, number>);
+                      
+                      return Object.entries(goalsByPlayer).map(([playerId, count]) => (
+                        <div key={playerId} className="flex items-center justify-between p-2 bg-muted rounded">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{getPlayerName(playerId)}</span>
+                            <Badge variant="secondary">
+                              {count} {count === 1 ? 'gol' : 'goles'}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removePlayerGoals(playerId)}
+                              className="h-8 px-3"
+                            >
+                              Quitar todos
+                            </Button>
+                          </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeGoal(index)}
-                          className="h-8 w-8 p-0"
-                        >
-                          ×
-                        </Button>
-                      </div>
-                    ))}
+                      ));
+                    })()}
                   </div>
                 </div>
               )}
 
-              {/* Formulario para añadir nuevo gol */}
+              {/* Formulario para añadir nuevo gol (simplificado con cantidad) */}
               <div className="space-y-4 p-4 border rounded-lg">
                 <h4 className="font-medium">Añadir anotador</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Jugador</Label>
                     <Select
-                      value={newGoal.playerId}
-                      onValueChange={(value) => setNewGoal({ ...newGoal, playerId: value })}
+                      value={selectedPlayerId}
+                      onValueChange={(value) => setSelectedPlayerId(value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona un jugador" />
@@ -549,47 +552,21 @@ export default function MatchesPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Minuto</Label>
+                    <Label>Cantidad de goles</Label>
                     <Input
                       type="number"
                       min="1"
-                      max="120"
-                      placeholder="45"
-                      value={newGoal.minute}
-                      onChange={(e) => setNewGoal({ ...newGoal, minute: e.target.value })}
+                      max="10"
+                      value={goalCount}
+                      onChange={(e) => setGoalCount(e.target.value)}
+                      placeholder="1"
                     />
                   </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="ownGoal"
-                      checked={newGoal.isOwnGoal}
-                      onCheckedChange={(checked) => setNewGoal({ ...newGoal, isOwnGoal: checked as boolean })}
-                    />
-                    <Label htmlFor="ownGoal" className="text-sm">Gol en propia puerta</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="penalty"
-                      checked={newGoal.isPenalty}
-                      onCheckedChange={(checked) => setNewGoal({ ...newGoal, isPenalty: checked as boolean })}
-                    />
-                    <Label htmlFor="penalty" className="text-sm">Gol de penalti</Label>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Notas del gol (opcional)</Label>
-                  <Input
-                    placeholder="Ej: Gol de cabeza, remate desde fuera del área..."
-                    value={newGoal.notes}
-                    onChange={(e) => setNewGoal({ ...newGoal, notes: e.target.value })}
-                  />
                 </div>
                 <Button
                   type="button"
                   onClick={addGoal}
-                  disabled={!newGoal.playerId || !newGoal.minute}
+                  disabled={!selectedPlayerId || !goalCount}
                   className="w-full"
                 >
                   Añadir anotador

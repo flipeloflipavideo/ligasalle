@@ -263,68 +263,80 @@ export default function TeamsPage() {
                   }
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
+              <div className="space-y-6 py-4">
                 {/* Información básica */}
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Nombre *
-                  </Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="col-span-3"
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Descripción
-                  </Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="col-span-3"
-                    rows={2}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="leagueId" className="text-right">
-                    Liga *
-                  </Label>
-                  <Select
-                    value={formData.leagueId}
-                    onValueChange={(value) => setFormData({ ...formData, leagueId: value })}
-                    required
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Selecciona una liga" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {leagues.map((league) => (
-                        <SelectItem key={league.id} value={league.id}>
-                          {getSportIcon(league.sportType)} {league.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="coachName" className="text-right">
-                    Entrenador
-                  </Label>
-                  <Input
-                    id="coachName"
-                    value={formData.coachName}
-                    onChange={(e) => setFormData({ ...formData, coachName: e.target.value })}
-                    className="col-span-3"
-                    placeholder="Nombre del entrenador"
-                  />
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                    Información Básica
+                  </h3>
+                  
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right font-medium">
+                      Nombre *
+                    </Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="col-span-3"
+                      required
+                      placeholder="Ej: Tigres Rojos"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="description" className="text-right font-medium">
+                      Descripción
+                    </Label>
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      className="col-span-3"
+                      rows={2}
+                      placeholder="Breve descripción del equipo..."
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="leagueId" className="text-right font-medium">
+                      Liga *
+                    </Label>
+                    <Select
+                      value={formData.leagueId}
+                      onValueChange={(value) => setFormData({ ...formData, leagueId: value })}
+                      required
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Selecciona una liga" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {leagues.map((league) => (
+                          <SelectItem key={league.id} value={league.id}>
+                            {getSportIcon(league.sportType)} {league.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {/* Sección de escudo */}
-                <div className="col-span-4">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                    Escudo del Equipo
+                  </h3>
+                  
+                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                    <p className="text-blue-800 font-medium flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      IMPORTANTE: Sube el escudo oficial del equipo aquí
+                    </p>
+                    <p className="text-blue-700 text-sm mt-1">
+                      El escudo se mostrará en las clasificaciones y listas de equipos.
+                    </p>
+                  </div>
+                  
                   <ImageUpload
                     currentImage={formData.shieldUrl}
                     onImageUpload={handleImageUpload}
@@ -333,36 +345,65 @@ export default function TeamsPage() {
                   />
                 </div>
 
-                {/* Color (opcional) */}
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="color" className="text-right">
-                    Color
-                  </Label>
-                  <div className="col-span-3 flex items-center gap-2">
+                {/* Configuración adicional */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+                    Configuración Adicional
+                  </h3>
+                  
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="coachName" className="text-right font-medium">
+                      Entrenador
+                    </Label>
                     <Input
-                      id="color"
-                      type="color"
-                      value={formData.color}
-                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                      className="w-16 h-10 p-1 border rounded"
-                    />
-                    <Input
-                      value={formData.color}
-                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                      className="flex-1"
-                      placeholder="#3b82f6"
+                      id="coachName"
+                      value={formData.coachName}
+                      onChange={(e) => setFormData({ ...formData, coachName: e.target.value })}
+                      className="col-span-3"
+                      placeholder="Nombre del entrenador"
                     />
                   </div>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="isActive" className="text-right">
-                    Activo
-                  </Label>
-                  <Switch
-                    id="isActive"
-                    checked={formData.isActive}
-                    onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
-                  />
+                  
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="color" className="text-right font-medium">
+                      Color
+                    </Label>
+                    <div className="col-span-3 flex items-center gap-3">
+                      <Input
+                        id="color"
+                        type="color"
+                        value={formData.color}
+                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                        className="w-12 h-10 p-1 border rounded cursor-pointer"
+                      />
+                      <Input
+                        value={formData.color}
+                        onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                        className="flex-1"
+                        placeholder="#3b82f6"
+                      />
+                      <div 
+                        className="w-8 h-8 rounded border-2 border-gray-300"
+                        style={{ backgroundColor: formData.color }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="isActive" className="text-right font-medium">
+                      Estado
+                    </Label>
+                    <div className="col-span-3 flex items-center gap-3">
+                      <Switch
+                        id="isActive"
+                        checked={formData.isActive}
+                        onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                      />
+                      <span className="text-sm text-gray-600">
+                        {formData.isActive ? "Equipo activo" : "Equipo inactivo"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
@@ -529,11 +570,21 @@ export default function TeamsPage() {
                                   {/* Team Header */}
                                   <div className="flex items-start justify-between">
                                     <div className="flex items-center gap-3">
-                                      {team.color && (
+                                      {team.shieldUrl ? (
+                                        <img
+                                          src={team.shieldUrl}
+                                          alt={`Escudo de ${team.name}`}
+                                          className="w-10 h-10 rounded-full border-2 border-border flex-shrink-0 object-cover"
+                                        />
+                                      ) : team.color ? (
                                         <div
                                           className="w-10 h-10 rounded-full border-2 border-border flex-shrink-0"
                                           style={{ backgroundColor: team.color }}
                                         />
+                                      ) : (
+                                        <div className="w-10 h-10 rounded-full border-2 border-border flex-shrink-0 bg-gray-200 flex items-center justify-center">
+                                          <Shield className="w-5 h-5 text-gray-400" />
+                                        </div>
                                       )}
                                       <div className="flex-1 min-w-0">
                                         <h3 className="font-semibold text-lg truncate">
