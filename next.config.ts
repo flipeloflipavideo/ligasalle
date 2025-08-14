@@ -20,10 +20,6 @@ const nextConfig: NextConfig = {
     // 构建时忽略ESLint错误
     ignoreDuringBuilds: true,
   },
-  // Configuración para PostCSS y Tailwind
-  experimental: {
-    optimizeCss: true,
-  },
 };
 
 export default nextConfig;
